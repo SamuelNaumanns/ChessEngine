@@ -1,3 +1,12 @@
+# Ignore build directory
+/build/
+
+# Ignore CMake-generated files
+/CMakeCache.txt
+/CMakeFiles/
+Makefile
+cmake_install.cmake
+
 # Prerequisites
 *.d
 
