@@ -4,9 +4,12 @@
 #include <cstdint>
 #include <iostream>
 
+// Define the number of bitboards (e.g., 12 for 6 white and 6 black pieces)
+#define NUM_BITBOARDS 12
+
 class Bitboard {
 public:
-    uint64_t bitboards[12] = {0}; // 6 piece types * 2 colors
+    uint64_t bitboards[NUM_BITBOARDS] = {0}; // 6 piece types * 2 colors
 
     enum PieceType {
         WHITE_PAWN, WHITE_KNIGHT, WHITE_BISHOP, WHITE_ROOK, WHITE_QUEEN, WHITE_KING,
@@ -15,7 +18,19 @@ public:
 
     Bitboard();
     void printBoard(uint64_t board);
-    void initPosition();
+
+    void clearAllBoards();
+
+    uint64_t getWhitePieces() const;
+    uint64_t getBlackPieces() const;
+
+    uint64_t getKnightMoves(int square);
+    
+private:
+    uint64_t knightMoveTable[64];
+
+    void initKnightMoves();
+    
 };
 
 // Bit Manipulation Helpers

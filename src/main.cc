@@ -1,14 +1,18 @@
 #include <iostream>
 #include "bitboard.h"
+#include "position.h"
 
 int main() {
-    Bitboard board;
+    Position pos;
+    Bitboard board = pos.bitboard;
 
-    std::cout << "White Pawns:" << std::endl;
-    board.printBoard(board.bitboards[Bitboard::WHITE_PAWN]);
+    std::cout << "White Pieces:" << std::endl;
+    board.printBoard(board.getWhitePieces());
 
-    std::cout << "Black Pawns:" << std::endl;
-    board.printBoard(board.bitboards[Bitboard::BLACK_PAWN]);
+    std::cout << "Black Pieces:" << std::endl;
+    board.printBoard(board.getBlackPieces());
+
+    pos.generateKnightMoves(true);
 
     return 0;
 }
