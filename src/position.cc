@@ -1,4 +1,5 @@
 #include "position.h"
+#include "move.h"
 
 Position::Position() : whiteToMove(true), enPassantSquare(-1) {
   castlingRights[0] = castlingRights[1] = castlingRights[2] = castlingRights[3] = true;
@@ -31,18 +32,28 @@ void Position::initializeStartPosition() {
   bitboard.bitboards[Bitboard::BLACK_KING] = 0x1000000000000000ULL;  // e8
 }
 
-void Position::generateKnightMoves(bool isWhite) {
-  uint64_t knights = isWhite ? bitboard.bitboards[Bitboard::WHITE_KNIGHT] 
-                             : bitboard.bitboards[Bitboard::BLACK_KNIGHT];
+std::vector<Move> Position::generateKnightMoves(bool isWhite) {
+    std::vector<Move> knightMoves;
+    uint64_t knights = isWhite ? bitboard.bitboards[Bitboard::WHITE_KNIGHT] 
+                               : bitboard.bitboards[Bitboard::BLACK_KNIGHT];
 
-  while (knights) {
-      int knightSquare = __builtin_ctzll(knights); // Get least significant bit index
-      uint64_t moves = bitboard.getKnightMoves(knightSquare); // Generate knight moves
-      moves &= ~(isWhite ? bitboard.getWhitePieces() : bitboard.getBlackPieces()); // Remove friendly fire
+    uint64_t opponentPieces = isWhite ? bitboard.getBlackPieces() : bitboard.getWhitePieces();
 
-      std::cout << "Knight moves from " << knightSquare << ":\n";
-      bitboard.printBoard(moves);
+    while (knights) {
+        int knightSquare = __builtin_ctzll(knights); // Get least significant bit index
+        uint64_t moves = bitboard.getKnightMoves(knightSquare); // Generate knight moves
+        moves &= ~(isWhite ? bitboard.getWhitePieces() : bitboard.getBlackPieces()); // Remove friendly fire
 
-      knights &= knights - 1; // Remove processed knight
-  }
+        // Iterate over all possible target squares
+        while (moves) {
+            int targetSquare = __builtin_ctzll(moves); // Get least significant bit index
+            bool isCapture = (opponentPieces & (1ULL << targetSquare)) != 0; // Check if it's a capture
+            knightMoves.emplace_back(knightSquare, targetSquare, isCapture); // Add move to the list
+            moves &= moves - 1; // Remove processed move
+        }
+
+        knights &= knights - 1; // Remove processed knight
+    }
+
+    return knightMoves; // Return all knight moves
 }

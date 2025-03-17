@@ -2,6 +2,7 @@
 #define POSITION_H
 
 #include "bitboard.h"
+#include "move.h"
 
 class Position {
 public:
@@ -14,7 +15,7 @@ public:
     void initializeStartPosition(); // Initialize starting position
 
     // Move Generation
-    void generateKnightMoves(bool isWhite);
+    std::vector<Move> generateKnightMoves(bool isWhite);
 };
 
 #endif // POSITION_H
